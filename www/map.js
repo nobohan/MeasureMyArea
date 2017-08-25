@@ -11,6 +11,33 @@
      })
    });
 
+   // WMTS
+/*   var parser = new ol.format.WMTSCapabilities();
+   fetch('https://tiles.maps.eox.at/wmts/1.0.0/WMTSCapabilities.xml').then(function(response) {
+     return response.text();
+   }).then(function(text) {
+     var result = parser.read(text);
+     var options = ol.source.WMTS.optionsFromCapabilities(result, {
+       layer: 's2cloudless_3857',
+       matrixSet: 'EPSG:3857'
+     });
+
+     var wmts = new ol.layer.Tile({
+       opacity: 1,
+       source: new ol.source.WMTS( /** @type {!olx.source.WMTSOptions} (options) )
+     });
+   })*/
+   
+
+   var wms = new ol.layer.Tile({
+     source: new ol.source.TileWMS({
+       url: 'https://tiles.maps.eox.at/wms',
+       params: {LAYERS: 's2cloudless_3857'},
+       attributions: 'Sentinel-2 cloudless by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016)'
+     })
+   });
+
+
    // Define the draw layer
    var source = new ol.source.Vector();
 
@@ -111,7 +138,7 @@
 
 
    var map = new ol.Map({
-     layers: [raster, vector],
+     layers: [vector, wms],
      target: 'map',
      view: new ol.View({
        center: ol.proj.transform([-4.56, 10.63], 'EPSG:4326', 'EPSG:3857'),
