@@ -39,7 +39,10 @@
 
 
    // Define the draw layer
-   var source = new ol.source.Vector();
+   var source = new ol.source.Vector({
+     features: (new ol.format.GeoJSON()).readFeatures(barrage)   
+   });
+
 
    var vector = new ol.layer.Vector({
      source: source,
@@ -119,7 +122,7 @@
        return;
      }
      /** @type {string} */
-     var helpMsg = 'Click to start drawing';
+     var helpMsg = 'Click to change the shape';
 
      if (sketch) {
        var geom = (sketch.getGeometry());
@@ -138,11 +141,11 @@
 
 
    var map = new ol.Map({
-     layers: [vector, wms],
+     layers: [wms, vector],
      target: 'map',
      view: new ol.View({
-       center: ol.proj.transform([-4.56, 10.63], 'EPSG:4326', 'EPSG:3857'),
-       zoom: 9
+       center: ol.proj.transform([-4.8, 10.8], 'EPSG:4326', 'EPSG:3857'),
+       zoom: 11
      })
    });
 
@@ -201,6 +204,10 @@
        })
      });
      map.addInteraction(draw);
+     
+     // Add modify interaction
+     var modify = new ol.interaction.Modify({source: source});
+     map.addInteraction(modify);
 
      createMeasureTooltip();
      createHelpTooltip();
